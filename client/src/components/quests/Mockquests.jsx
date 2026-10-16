@@ -1,4 +1,3 @@
-// Временные данные. Когда появится бэкенд, замените на запрос.
 export const MOCK_QUESTS = [
     { id: 1, title: 'Раздать еду в приюте', description: 'Помочь волонтёрам разложить и раздать обеды.', distanceKm: 2, durationHours: 1, xp: 40, responses: 5, urgent: false, multiplier: 1 },
     { id: 2, title: 'Привезти воду в пункт помощи', description: 'Нужна машина или рюкзак, привезти 5 бутылей.', distanceKm: 3, durationHours: 1, xp: 30, responses: 0, urgent: true, multiplier: 3 },
