@@ -1,207 +1,82 @@
-import React, { useState } from "react";
-import { useForm, Controller } from "react-hook-form";
-import {
-    Box,
-    Button,
-    Typography,
-    TextField,
-    MenuItem,
-    Paper,
-    Alert,
-} from "@mui/material";
-import { useLoginUserAndGetTokensMutation } from "../api/auth.js";
-import { useNavigate } from "react-router-dom";
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { Alert, Box, Button, Paper, TextField, Typography } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import { registerUser } from '../api/auth.js';
+import { useAuth } from '../context/AuthContext.jsx';
 
-const OrganisationForm = () => {
-    const {
-        register,
-        handleSubmit,
-        control,
-        formState: { errors },
-    } = useForm({
-        defaultValues: {
-            username: "",
-            secondName: "",
-            gender: "",
-            email: "",
-            password: "",
-        },
+export default function OrganisationRegister() {
+    const navigate = useNavigate();
+    const { setUser } = useAuth();
+    const [serverError, setServerError] = useState('');
+
+    const { register, handleSubmit, watch, formState: { errors, isSubmitting } } = useForm({
+        defaultValues: { organization: '', phone: '', description: '', email: '', password: '', confirm: '' },
     });
 
-    const [serverError, setServerError] = useState("");
-    const [loginUser, { isLoading }] = useLoginUserAndGetTokensMutation();
-    const navigate = useNavigate();
+    // MUI TextField требует inputRef вместо ref
+    const reg = (name, opts) => {
+        const { ref, ...rest } = register(name, opts);
+        return { ...rest, inputRef: ref };
+    };
 
     const onSubmit = async (data) => {
         try {
-            setServerError("");
-            const result = await loginUser({
-                username: data.username,
-                password: data.password,
-                expiresInMins: 30,
-            }).unwrap();
-
-            localStorage.setItem("token", result.accessToken);
-            navigate("/");
-        } catch (err) {
-            console.error(err);
-            setServerError(err?.data?.message || "Не удалось войти. Проверьте данные.");
+            setServerError('');
+            const { confirm, ...payload } = data;
+            const user = await registerUser({ ...payload, role: 'organizer' });
+            setUser(user);
+            navigate('/organizer/tasks');
+        } catch (e) {
+            setServerError(e.message || 'Не удалось зарегистрироваться');
         }
     };
 
     return (
-        <Box
-            sx={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                minHeight: "100vh",
-                bgcolor: "#f4f6f8",
-                p: 2,
-            }}
-        >
-            <Paper
-                elevation={4}
-                sx={{
-                    p: { xs: 3, sm: 4 },
-                    width: "100%",
-                    maxWidth: 450,
-                    borderRadius: 4,
-                    boxShadow: "0 8px 24px rgba(0,0,0,0.08)",
-                }}
-            >
-                <Typography
-                    variant="h5"
-                    component="h1"
-                    fontWeight="700"
-                    align="center"
-                    gutterBottom
-                    sx={{ mb: 1 }}
-                >
-                    Регистрация
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', bgcolor: '#f4f6f8', p: 2 }}>
+            <Paper elevation={4} sx={{ p: { xs: 3, sm: 4 }, width: '100%', maxWidth: 450, borderRadius: 4 }}>
+                <Typography variant="h5" component="h1" fontWeight={700} align="center" sx={{ mb: 1 }}>
+                    Регистрация организатора
                 </Typography>
-                <Typography
-                    variant="body2"
-                    color="text.secondary"
-                    align="center"
-                    sx={{ mb: 3 }}
-                >
+                <Typography variant="body2" color="text.secondary" align="center" sx={{ mb: 3 }}>
                     Заполните данные для создания аккаунта
                 </Typography>
 
-                {serverError && (
-                    <Alert severity="error" sx={{ mb: 2 }}>
-                        {serverError}
-                    </Alert>
-                )}
+                {serverError && <Alert severity="error" sx={{ mb: 2 }}>{serverError}</Alert>}
 
-                <Box
-                    component="form"
-                    onSubmit={handleSubmit(onSubmit)}
-                    noValidate
-                    sx={{ display: "flex", flexDirection: "column", gap: 2.5 }}
-                >
-                    {/* Имя */}
-                    <TextField
-                        fullWidth
-                        label="Имя"
-                        placeholder="Введите ваше имя"
-                        variant="outlined"
-                        {...register("username", { required: "Введите ваше имя" })}
-                        error={!!errors.username}
-                        helperText={errors.username?.message}
-                    />
+                <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate
+                     sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
 
-                    {/* Фамилия */}
-                    <TextField
-                        fullWidth
-                        label="Фамилия"
-                        placeholder="Введите вашу фамилию"
-                        variant="outlined"
-                        {...register("secondName", { required: "Введите вашу фамилию" })}
-                        error={!!errors.secondName}
-                        helperText={errors.secondName?.message}
-                    />
+                    <TextField label="Название организации / ваше имя"
+                               {...reg('organization', { required: 'Введите название' })}
+                               error={!!errors.organization} helperText={errors.organization?.message} />
 
-                    {/* Пол (через Controller для корректной работы Select в React Hook Form) */}
-                    <Controller
-                        name="gender"
-                        control={control}
-                        rules={{ required: "Выберите пол" }}
-                        render={({ field }) => (
-                            <TextField
-                                {...field}
-                                select
-                                fullWidth
-                                label="Пол"
-                                error={!!errors.gender}
-                                helperText={errors.gender?.message}
-                            >
-                                <MenuItem value="female">Женский (Female)</MenuItem>
-                                <MenuItem value="male">Мужской (Male)</MenuItem>
-                                <MenuItem value="other">Другой (Other)</MenuItem>
-                            </TextField>
-                        )}
-                    />
+                    <TextField label="Телефон"
+                               {...reg('phone', { required: 'Введите телефон' })}
+                               error={!!errors.phone} helperText={errors.phone?.message} />
 
-                    {/* Email */}
-                    <TextField
-                        fullWidth
-                        type="email"
-                        label="Email"
-                        placeholder="example@mail.com"
-                        variant="outlined"
-                        {...register("email", {
-                            required: "Введите Email",
-                            pattern: {
-                                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                                message: "Некорректный формат email",
-                            },
-                        })}
-                        error={!!errors.email}
-                        helperText={errors.email?.message}
-                    />
+                    <TextField label="Чем занимаетесь" multiline rows={3} {...reg('description')} />
 
-                    {/* Пароль */}
-                    <TextField
-                        fullWidth
-                        type="password"
-                        label="Пароль"
-                        placeholder="Введите пароль"
-                        variant="outlined"
-                        {...register("password", {
-                            required: "Введите пароль",
-                            minLength: {
-                                value: 6,
-                                message: "Пароль должен быть не менее 6 символов",
-                            },
-                        })}
-                        error={!!errors.password}
-                        helperText={errors.password?.message}
-                    />
+                    <TextField label="Email" type="email" {...reg('email', {
+                        required: 'Введите email',
+                        pattern: { value: /^\S+@\S+\.\S+$/, message: 'Некорректный email' },
+                    })} error={!!errors.email} helperText={errors.email?.message} />
 
-                    {/* Кнопка */}
-                    <Button
-                        type="submit"
-                        variant="contained"
-                        size="large"
-                        disabled={isLoading}
-                        sx={{
-                            mt: 1,
-                            py: 1.5,
-                            borderRadius: 3,
-                            fontSize: "1rem",
-                            fontWeight: 600,
-                            textTransform: "none",
-                            boxShadow: "0 4px 12px rgba(25, 118, 210, 0.3)",
-                        }}
-                    >
-                        {isLoading ? "Загрузка..." : "Зарегистрироваться"}
+                    <TextField label="Пароль" type="password" {...reg('password', {
+                        required: 'Введите пароль',
+                        minLength: { value: 6, message: 'Минимум 6 символов' },
+                    })} error={!!errors.password} helperText={errors.password?.message} />
+
+                    <TextField label="Повторите пароль" type="password" {...reg('confirm', {
+                        validate: (v) => v === watch('password') || 'Пароли не совпадают',
+                    })} error={!!errors.confirm} helperText={errors.confirm?.message} />
+
+                    <Button type="submit" variant="contained" size="large" disabled={isSubmitting}
+                            sx={{ py: 1.5, borderRadius: 3, fontWeight: 600, textTransform: 'none' }}>
+                        {isSubmitting ? 'Загрузка...' : 'Зарегистрироваться'}
                     </Button>
                 </Box>
             </Paper>
         </Box>
     );
-};
-
-export default OrganisationForm;
+}

@@ -8,6 +8,8 @@ import {Route, Routes} from "react-router-dom";
 import Box from "@mui/material/Box";
 // import CartPage from "./cart/CartPage.jsx";
 import RegisterChoiceForms from "./pages/RegisterChoice.jsx";
+import OrganisationForm from "./pages/OrganisationRegister.jsx";
+import VolunteerForm from './pages/VolunteerRegister.jsx'
 import ProtectedRoute from "./ProtectedRoute.jsx";
 // import {ErrorPage} from "./errorPage";
 import LoginForm from "./pages/Login.jsx";
@@ -19,31 +21,19 @@ const App = () => {
             <Navbar/>
             <MainLayout>
                 <Routes>
-                    {/*<Route path ='/' element={*/}
-                    {/*    <ProtectedRoute>*/}
-                    {/*        <HomePage/>*/}
-                    {/*    </ProtectedRoute> } />*/}
-                    {/*<Route path ='/errorpage' element={<ErrorPage/>} />*/}
-                    {/*<Route path ='/homepage' element={*/}
-                    {/*    <ProtectedRoute>*/}
-                    {/*        <HomePage/>*/}
-                    {/*    </ProtectedRoute>} />*/}
-                    {/*<Route path ='/shop' element={*/}
-                    {/*    <ProtectedRoute>*/}
-                    {/*        <CategoryPage />*/}
-                    {/*    </ProtectedRoute>} />*/}
-                    {/*<Route path ='/shop/:categoryName' element={*/}
-                    {/*    <ProtectedRoute>*/}
-                    {/*        <CategoryPage />*/}
-                    {/*    </ProtectedRoute>} />*/}
-                    {/*<Route path ='/details/:productId' element={*/}
-                    {/*    <ProtectedRoute>*/}
-                    {/*        <ProductDetailPage />*/}
-                    {/*    </ProtectedRoute>}/>*/}
-                    {/*<Route path ='/cart' element={*/}
-                    {/*    <ProtectedRoute>*/}
-                    {/*        <CartPage />*/}
-                    {/*    </ProtectedRoute>}/>*/}
+                    <Route path="/register" element={<RegisterChoiceForms />} />
+                    <Route path="/register/volunteer" element={<VolunteerForm />} />
+                    <Route path="/register/organizer" element={<OrganisationForm />} />
+                    <ProtectedRoute>
+                        <Route element={<MainLayout />}>
+                            <Route path="/volunteer/tasks" element={<TasksList />} />
+                            <Route path="/volunteer/my-tasks" element={<MyTasks />} />
+                            <Route path="/volunteer/rewards" element={<Rewards />} />
+                            <Route path="/organizer/tasks" element={<MyPostedTasks />} />
+                            <Route path="/organizer/create" element={<CreateTask />} />
+                            <Route path="/profile" element={<Profile />} />
+                        </Route>
+                    </ProtectedRoute>
                     <Route path ='/register' element={<RegisterChoiceForms />}/>
                     <Route path ='/login' element={<LoginForm />}/>
                 </Routes>

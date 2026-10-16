@@ -22,8 +22,8 @@ export default function RegisterChoiceForms() {
             }}
         >
             <ButtonGroup size="large" aria-label="Large button group">
-                <Box onClick={VolunteerForm}>{buttons[0]}</Box>
-                <Box onClick={OrganisationForm}>{buttons[1]}</Box>
+                <Button onClick={() => navigate('/register/volunteer')}>Volunteer</Button>
+                <Button onClick={() => navigate('/register/organizer')}>Organisation</Button>
             </ButtonGroup>
         </Box>
     );
