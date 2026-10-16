@@ -10,8 +10,9 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.118.0",
     "react-hook-form": "^7.90.0",
+    "react-redux": "^9.3.0",
     "react-router-dom": "^7.18.4"
-  },
-  "devDependencies": {}
+  }
 }

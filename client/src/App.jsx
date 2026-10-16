@@ -1,16 +1,15 @@
-import './App.css'
-import {HomePage} from "./homepage";
-import Navbar from "./navbar";
-import {MainLayout} from "./templates/index.js";
+// import {HomePage} from "./homepage";
+// import Navbar from "./navbar";
+// import {MainLayout} from "./templates/index.js";
 import {Route, Routes} from "react-router-dom";
-import {CategoryPage} from "./categoryPage";
-import {ProductDetailPage} from "./productdetailpage";
-import {Footer} from "./footer/index.js";
+// import {CategoryPage} from "./categoryPage";
+// import {ProductDetailPage} from "./productdetailpage";
+// import {Footer} from "./footer/index.js";
 import Box from "@mui/material/Box";
-import CartPage from "./cart/CartPage.jsx";
+// import CartPage from "./cart/CartPage.jsx";
 import RegisterChoiceForms from "./pages/RegisterChoice.jsx";
 import ProtectedRoute from "./ProtectedRoute.jsx";
-import {ErrorPage} from "./errorPage";
+// import {ErrorPage} from "./errorPage";
 import LoginForm from "./pages/Login.jsx";
 
 const App = () => {
