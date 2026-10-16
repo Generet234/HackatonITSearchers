@@ -1,6 +1,6 @@
 // import {HomePage} from "./homepage";
 // import Navbar from "./navbar";
-// import {MainLayout} from "./templates/index.js";
+import {MainLayout} from "./templates/index.js";
 import {Route, Routes} from "react-router-dom";
 // import {CategoryPage} from "./categoryPage";
 // import {ProductDetailPage} from "./productdetailpage";
